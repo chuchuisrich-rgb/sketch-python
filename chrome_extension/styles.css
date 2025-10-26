@@ -1,0 +1,8 @@
+
+body { font-family: 'Inter', sans-serif; background:#f9f9fb; color:#111; width:350px; padding:15px; }
+.container { text-align:center; }
+button { background:#007aff; border:none; color:white; padding:10px 14px; border-radius:8px; cursor:pointer; margin-top:10px; }
+button:hover { background:#005ed1; }
+.hidden { display:none; }
+.small { color:#666; font-size:12px; margin-top:8px; }
+#summaryText { margin-top:10px; text-align:left; }
