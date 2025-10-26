@@ -4,3 +4,6 @@ __pycache__/
 
 #ignroe environment files
 .env
+
+#ignore log files
+logs/
