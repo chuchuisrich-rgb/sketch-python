@@ -5,7 +5,7 @@ from utils import setup_logging
 import routes
 
 app = Flask(__name__)
-setup_logging()
+setup_logging("/Users/aravind/growth/chrome-plugin/summarizer_full_app_logs", "summarizer_app.log")
 
 routes.init_app(app)
 

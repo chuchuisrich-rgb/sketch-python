@@ -224,10 +224,10 @@ def summarize_text_openai(input_text, input_url, mode="1min"):
         if mode == "bullets":
             instruction = f"Summarize this {source_type} in exactly 5 bullet points highlighting key insights."
         else:
-            instruction = f"Write a concise '1-minute read' summary (about 100–150 words) of this {source_type}."
+            instruction = f"Write a concise '1-minute read' summary (about 75–100 words) of this {source_type}."
 
         # Limit content length for token safety
-        content_snippet = content[:15000]
+        content_snippet = content[:150000]
         logging.debug(f"Prompt prepared (length={len(content_snippet)} chars).")
 
         # Build final message
@@ -235,7 +235,7 @@ def summarize_text_openai(input_text, input_url, mode="1min"):
         logging.debug(f"Final prompt starts with: {prompt[:200]}...")
 
         # Make GPT-4-Turbo call
-        logging.info("Calling GPT-4-Turbo for summarization...")
+        logging.info("Calling gpt-4o-mini for summarization...")
         gpt_start = time.time()
         response = client.chat.completions.create(
             model="gpt-4o-mini",
