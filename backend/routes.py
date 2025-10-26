@@ -19,6 +19,7 @@ def init_app(app):
                 logger.warning("⚠️ Empty text received")
                 return jsonify({"error": "No text provided"}), 400
 
+            logger.info(f"Received text for summarization: {text}")
             logger.info(f"📥 Received text length: {len(text)}")
 
             content_type = detect_content_type(request.headers.get("Referer", ""))

@@ -1,5 +1,5 @@
 
-const API_URL = "https://YOUR-RENDER-APP.onrender.com/api/summarize";
+const API_URL = "http://127.0.0.1:5000/api/summarize";
 
 document.getElementById("summarizeBtn").addEventListener("click", async () => {
   const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });

@@ -1,3 +1,6 @@
 # python virtual enviroment
 venv/
 __pycache__/
+
+#ignroe environment files
+.env
