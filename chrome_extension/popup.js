@@ -1,5 +1,8 @@
 
-const API_URL = "http://127.0.0.1:5000/api/summarize";
+// Local backend url
+// const API_URL = "http://127.0.0.1:5000/api/summarize"; 
+// Production backend url
+const API_URL = "https://sketch-python.onrender.com/api/summarize";
 
 document.getElementById("summarizeBtn").addEventListener("click", async () => {
   const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
