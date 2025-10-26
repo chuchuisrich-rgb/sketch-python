@@ -1,6 +1,6 @@
 
 from flask import request, jsonify
-from services import summarize_text, detect_content_type
+from services import summarize_text, detect_content_type, summarize_text_openai
 import logging
 
 logger = logging.getLogger(__name__)
@@ -14,6 +14,7 @@ def init_app(app):
         try:
             data = request.get_json() or {}
             text = data.get("text", "").strip()
+            url = data.get("url", "").strip()
 
             if not text:
                 logger.warning("⚠️ Empty text received")
@@ -25,10 +26,12 @@ def init_app(app):
             content_type = detect_content_type(request.headers.get("Referer", ""))
             logger.info(f"🧠 Detected Content Type: {content_type}")
 
-            summary = summarize_text(text)
+            # summary = summarize_text(text, content_type)
+            summary_openai = summarize_text_openai(text, url)
+            logger.info(f"📝 Summary_openai: {summary_openai}")
 
             response = {
-                "summary": summary,
+                "summary": summary_openai,
                 "content_type": content_type
             }
 
