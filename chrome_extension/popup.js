@@ -13,7 +13,7 @@ document.getElementById("summarizeBtn").addEventListener("click", async () => {
     const response = await fetch(API_URL, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ text: pageText })
+      body: JSON.stringify({ url: tab.url, text: pageText })
     });
     const data = await response.json();
     const summaryDiv = document.getElementById("summaryCard");
@@ -30,4 +30,37 @@ document.getElementById("copyBtn").addEventListener("click", () => {
   navigator.clipboard.writeText(text);
   document.getElementById("copyBtn").innerText = "✅ Copied!";
   setTimeout(() => document.getElementById("copyBtn").innerText = "📋 Copy", 1500);
+});
+
+document.getElementById("listenBtn").addEventListener("click", () => {
+  const summaryText = document.getElementById("summaryText").innerText;
+
+  if (!summaryText || summaryText.trim().length === 0) {
+    document.getElementById("disclaimer").innerText = "No summary available to read.";
+    return;
+  }
+
+  // Cancel any ongoing speech first
+  window.speechSynthesis.cancel();
+
+  const utterance = new SpeechSynthesisUtterance(summaryText);
+  utterance.lang = "en-US"; // you can change voice/language
+  utterance.rate = 1.0;     // normal speed
+  utterance.pitch = 1.0;
+
+  // Optional: pick a specific voice
+  const voices = window.speechSynthesis.getVoices();
+  const preferred = voices.find(v => v.name.toLowerCase().includes("female") || v.name.toLowerCase().includes("google"));
+  if (preferred) utterance.voice = preferred;
+
+  // Update button text while speaking
+  const listenBtn = document.getElementById("listenBtn");
+  listenBtn.innerText = "🔈 Playing...";
+  utterance.onend = () => { listenBtn.innerText = "🔊 Listen"; };
+
+  window.speechSynthesis.speak(utterance);
+});
+
+document.getElementById("stopBtn").addEventListener("click", () => {
+  window.speechSynthesis.cancel();
 });
