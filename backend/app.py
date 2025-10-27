@@ -1,8 +1,8 @@
 import os
 import time
-from metrics import increment_request_count
 from flask import Flask, g, request
 from utils import setup_logging
+from metrics import increment_request_count
 import routes
 
 app = Flask(__name__)
