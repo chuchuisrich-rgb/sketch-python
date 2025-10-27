@@ -1,6 +1,7 @@
 
 from flask import request, jsonify
 from services import summarize_text, detect_content_type, summarize_text_openai
+from metrics import get_request_stats
 import logging
 
 logger = logging.getLogger(__name__)
@@ -41,3 +42,15 @@ def init_app(app):
         except Exception as e:
             logger.exception("🔥 Summarization failed")
             return jsonify({"error": str(e)}), 500
+
+
+    # -------------------------
+    # Add new /api/stats endpoint
+    # -------------------------
+    @app.route("/api/stats", methods=["GET"])
+    def stats():
+        """Return daily request statistics from JSON file."""
+        stats = get_request_stats()
+        if not stats:
+            return jsonify({"message": "No stats yet."}), 200
+        return jsonify(stats), 200
