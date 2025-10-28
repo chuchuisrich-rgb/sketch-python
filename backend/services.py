@@ -191,7 +191,7 @@ def summarize_text_openai(input_text, input_url, mode="1min"):
                 source_type = "PDF document"
             elif "reddit.com" in domain:
                 logging.debug("Identified as Reddit post.")
-                title, text = extract_reddit_text(url)
+                title, text = extract_clean_text(url)
                 source_type = "Reddit post"
             elif "linkedin.com" in domain:
                 logging.debug("Identified as LinkedIn content.")
@@ -226,6 +226,7 @@ def summarize_text_openai(input_text, input_url, mode="1min"):
         else:
             instruction = f"Write a concise '1-minute read' summary (about 75–100 words) of this {source_type}."
 
+        instruction += "Can you also include sentiment analysis (is the tone Positive, Negative, or Neutral?) at the end of the summary. if the content is product reviews or some reddit discussion thread"
         # Limit content length for token safety
         content_snippet = content[:150000]
         logging.debug(f"Prompt prepared (length={len(content_snippet)} chars).")
