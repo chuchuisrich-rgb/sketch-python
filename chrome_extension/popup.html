@@ -1,22 +1,89 @@
-
 <!DOCTYPE html>
 <html>
 <head>
-<meta charset="utf-8"/>
-<link rel="stylesheet" href="styles.css"/>
+  <meta charset="utf-8" />
+  <style>
+    body {
+      font-family: system-ui, sans-serif;
+      width: 380px;
+      padding: 12px;
+      background: #fafafa;
+      color: #111;
+    }
+
+    h3 {
+      margin-top: 0;
+    }
+
+    #summaryCard {
+      margin-top: 10px;
+      background: #fff;
+      border-radius: 10px;
+      padding: 12px;
+      box-shadow: 0 1px 5px rgba(0,0,0,0.15);
+      max-height: 350px;
+      overflow-y: auto;
+      white-space: pre-wrap;
+    }
+
+    #summaryText {
+      font-size: 14px;
+      line-height: 1.4;
+      margin-bottom: 10px;
+    }
+
+    .sentiment {
+      font-weight: 600;
+      padding: 6px 10px;
+      border-radius: 6px;
+      display: inline-block;
+      margin-top: 4px;
+    }
+
+    /* ✅ Color codes for sentiment */
+    .sentiment.positive { background: #dcfce7; color: #166534; }  /* green */
+    .sentiment.neutral  { background: #fef3c7; color: #92400e; }  /* orange */
+    .sentiment.negative { background: #fee2e2; color: #b91c1c; }  /* red */
+
+    button {
+      margin-right: 6px;
+      margin-top: 6px;
+      cursor: pointer;
+    }
+
+    .small {
+      font-size: 12px;
+      color: #555;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+  </style>
+  <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
-<div class="container">
-  <h3>🧠 Simple Summarizer</h3>
-  <button id="summarizeBtn">Summarize This Page</button>
-  <p id="disclaimer" class="small"></p>
-  <div id="summaryCard" class="hidden">
-    <p id="summaryText"></p>
-    <button id="copyBtn">📋 Copy</button>
-    <button id="listenBtn">🔊 Listen</button>
-    <button id="stopBtn">⏹ Stop</button>
+  <div class="container">
+    <h3>🧠 Simple Summarizer</h3>
+    <button id="summarizeBtn">Summarize This Page</button>
+    <p id="disclaimer" class="small"></p>
+
+    <div id="summaryCard" class="hidden">
+      <p id="summaryText"></p>
+
+      <!-- ✅ Sentiment block -->
+      <div id="sentimentBlock" class="hidden">
+        <span id="sentimentBadge" class="sentiment"></span>
+        <p id="sentimentBreakdown" class="small"></p>
+      </div>
+
+      <div id="buttonGroup" class="hidden">
+        <button id="copyBtn">📋 Copy</button>
+        <button id="listenBtn">🔊 Listen</button>
+        <button id="stopBtn">⏹ Stop</button>
+      </div>
+    </div>
   </div>
-</div>
-<script src="popup.js"></script>
+  <script src="popup.js"></script>
 </body>
 </html>

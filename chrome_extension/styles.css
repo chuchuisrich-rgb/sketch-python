@@ -1,8 +1,109 @@
-
-body { font-family: 'Inter', sans-serif; background:#f9f9fb; color:#111; width:350px; padding:15px; }
+/* ------------------------------
+   EXISTING STYLES (keep yours)
+------------------------------- */
+body { 
+  font-family: 'Inter', sans-serif; 
+  background:#f9f9fb; 
+  color:#111; 
+  width:350px; 
+  padding:15px; 
+}
 .container { text-align:center; }
-button { background:#007aff; border:none; color:white; padding:10px 14px; border-radius:8px; cursor:pointer; margin-top:10px; }
+button { 
+  background:#007aff; 
+  border:none; 
+  color:white; 
+  padding:10px 14px; 
+  border-radius:8px; 
+  cursor:pointer; 
+  margin-top:10px; 
+}
 button:hover { background:#005ed1; }
 .hidden { display:none; }
 .small { color:#666; font-size:12px; margin-top:8px; }
 #summaryText { margin-top:10px; text-align:left; }
+
+/* ------------------------------
+   NEW ADDITIONS FOR BETTER LAYOUT
+------------------------------- */
+
+/* Summary text block */
+#summaryCard {
+  display: flex;
+  flex-direction: column;
+  gap: 6px; /* tighter spacing */
+  margin-top: 8px;
+  position: relative; /* allows sentiment badge to float if desired */
+}
+
+/* Sentiment block layout */
+#sentimentBlock {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 8px;
+  margin-top: 4px;
+}
+
+/* Sentiment badge tweaks */
+#sentimentBadge {
+  display: inline-block;
+  font-size: 0.9rem;
+  font-weight: 600;
+  padding: 4px 10px;
+  border-radius: 10px;
+  background-color: #eaf7ec;
+  color: #2b7a0b;
+  margin-top: -6px; /* pulls smiley slightly upward */
+  position: relative;
+  top: -3px;
+}
+
+/* Sentiment color themes */
+.sentiment.positive {
+  background-color: #e8f8ef;
+  color: #1e7b34;
+}
+.sentiment.neutral {
+  background-color: #f1f1f1;
+  color: #555;
+}
+.sentiment.negative {
+  background-color: #ffeaea;
+  color: #c0392b;
+}
+
+/* Buttons row styling */
+#buttonGroup {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 6px;
+  margin-top: 8px;
+  flex-wrap: nowrap;
+}
+
+#buttonGroup button {
+  flex: 1;
+  padding: 10px 14px;
+  border-radius: 8px;
+  border: none;
+  background-color: #007aff; /* same blue as Summarize */
+  color: white;
+  cursor: pointer;
+  font-weight: 500;
+  transition: background 0.2s;
+  margin-top: 6px;
+}
+
+#buttonGroup button:hover {
+  background-color: #005ed1; /* same hover as Summarize */
+}
+
+
+/* (Optional) Float the smiley badge at top-right of the summary box */
+#sentimentBadge {
+  position: absolute;
+  top: 4px;
+  right: 6px;
+}

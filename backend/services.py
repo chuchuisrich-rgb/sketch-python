@@ -1,3 +1,4 @@
+import json
 import logging
 import io
 import os
@@ -13,6 +14,8 @@ from PyPDF2 import PdfReader
 from openai import OpenAI
 from googleapiclient.discovery import build
 
+from transformers import pipeline
+
 logger = logging.getLogger(__name__)
 
 MAX_WORDS = 700
@@ -21,7 +24,14 @@ MAX_WORDS = 700
 if os.getenv("RENDER") is None:
     load_dotenv()
 
-HF_API_URL = "https://api-inference.huggingface.co/models/facebook/bart-large-cnn"
+# Deprecated Hugging Face API details
+# HF_API_URL = "https://api-inference.huggingface.co/models/facebook/bart-large-cnn"
+
+# not working HF_API_URL = "https://api-inference.huggingface.co/models/sshleifer/distilbart-cnn-12-6"
+# not working HF_API_URL = "https://api-inference.huggingface.co/models/google/pegasus-xsum"
+HF_API_URL = "https://api-inference.huggingface.co/models/Falconsai/text_summarization"
+
+
 HF_API_KEY = os.getenv("HF_API_KEY")
 ONE_MINUTE_READ_5_BULLET_POINTS = "SUMMARIZE THE BELOW TEXT IN 5 SENTENCES:\n\n"
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
@@ -221,18 +231,47 @@ def summarize_text_openai(input_text, input_url, mode="1min"):
             logging.info(f"Received text input length={len(content)} characters.")
 
         # Build prompt
-        if mode == "bullets":
-            instruction = f"Summarize this {source_type} in exactly 5 bullet points highlighting key insights."
-        else:
-            instruction = f"Write a concise '1-minute read' summary (about 75–100 words) of this {source_type}."
+        # if mode == "bullets":
+        #     instruction = f"Summarize this {source_type} in exactly 5 bullet points highlighting key insights."
+        # else:
+        #     instruction = f"Write a concise '1-minute read' summary (about 75–100 words) of this {source_type}."
 
-        # instruction += "Can you also include sentiment analysis (is the tone Positive, Negative, or Neutral?) at the end of the summary. if the content is product reviews or some reddit discussion thread"
+        # if "reddit.com" in input_url.lower():
+        #     site_instruction = "This content is from Reddit. Focus sentiment analysis on user comments and overall discussion tone."
+        # elif "amazon." in input_url.lower():
+        #     site_instruction = "This content is from Amazon. Focus sentiment analysis on customer reviews and overall product perception."
+        # else:
+        #     site_instruction = "This is general content. Focus mainly on summarization."
+        # logging.info(f"Site-specific instruction: {site_instruction}")
+
+        # instruction += " " + site_instruction
+
         # Limit content length for token safety
-        content_snippet = content[:150000]
+        content_snippet = content[:30000]
         logging.debug(f"Prompt prepared (length={len(content_snippet)} chars).")
 
         # Build final message
-        prompt = f"{instruction}\n\n{content_snippet}"
+        # prompt = f"{instruction}\n\n{content_snippet}"
+
+        prompt = f"""
+            You are an analytical AI that summarizes and, if applicable, performs sentiment analysis.
+
+            If the content is from Reddit or Amazon, include sentiment analysis based on comments or reviews.
+            If it is a general blog or news article, summarize only.
+
+            Respond **strictly in JSON** with these possible fields:
+            {{
+            "summary": "3–5 sentence summary of the content",
+            "sentiment": "Positive / Neutral / Negative (only for Reddit or Amazon)",
+            "positive_percent": <number, optional>,
+            "neutral_percent": <number, optional>,
+            "negative_percent": <number, optional>
+            }}
+
+            Content:
+            {content_snippet}
+            """
+        
         logging.debug(f"Final prompt starts with: {prompt[:200]}...")
 
         # Make GPT-4-Turbo call
@@ -243,15 +282,56 @@ def summarize_text_openai(input_text, input_url, mode="1min"):
             messages=[{"role": "user", "content": prompt}],
             temperature=0.4,
         )
+        #Try to use local
+        # response = summarize_text_local(prompt)
+        logging.info("##" * 20)
+        logging.info(f"Full Hugging Face response: {response}")
+        logging.info("##" * 20)
+ 
         gpt_end = time.time()
 
-        summary_text = response.choices[0].message.content.strip()
-        logging.info(f"Summary received in {gpt_end - gpt_start:.2f}s, length={len(summary_text)} chars.")
-        logging.debug(f"Summary preview: {summary_text[:300]}...")
-        logging.info(f"[END] summarize_text() total time={time.time() - start_time:.2f}s")
+        raw_output = response.choices[0].message.content.strip()
+        logging.info(f"Raw GPT output received in {gpt_end - gpt_start:.2f}s, length={len(raw_output)} chars.")
+        logging.debug(f"Raw output preview: {raw_output[:300]}...")
 
-        return summary_text
+        logging.info("##" * 20)
+        logging.info(f"Full GPT output: {raw_output}")
+        logging.info("##" * 20)
+        hf_result = call_hugging_face(prompt)
+        logging.info(f"Full Hugging Face output: {hf_result}")
+        logging.info("##" * 20)
+
+
+        # Try to parse JSON (GPT sometimes returns extra formatting)
+        try:
+            result = json.loads(raw_output)
+            summary_text = result.get("summary", "")
+            sentiment = result.get("sentiment")
+            pos = result.get("positive_percent")
+            neu = result.get("neutral_percent")
+            neg = result.get("negative_percent")
+
+            logging.info(f"✅ Parsed JSON successfully. Sentiment={sentiment}, +%={pos}, n%={neu}, -%={neg}")
+
+        except json.JSONDecodeError:
+            logging.warning("⚠️ Failed to parse GPT response as JSON. Returning raw summary text.")
+            result = {"summary": raw_output, "sentiment": None}
+            summary_text = raw_output
+
+        logging.info(f"[END] summarize_text() total time={time.time() - start_time:.2f}s")
+        return result
+
 
     except Exception as e:
         logging.exception(f"❌ Exception in summarize_text(): {e}")
-        return f"❌ Error: {e}"
+        return f"Error with the summarization service. Please try again later."
+    
+
+def summarize_text_local(text: str) -> str:
+    """
+    Summarize text locally using a lightweight model.
+    Requires 'transformers' and 'torch' installed.
+    """
+    summarizer = pipeline("summarization", model="sshleifer/distilbart-cnn-12-6")
+    summary = summarizer(text, max_length=200, min_length=40, do_sample=False)[0]['summary_text']
+    return summary
