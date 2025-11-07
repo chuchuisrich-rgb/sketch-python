@@ -5,7 +5,7 @@
 // const API_URL = "https://sketch-python.onrender.com/api/summarize";
 
 // Detect environment
-const isLocal = !chrome.runtime.getManifest().update_url; // only true in dev unpacked mode
+const isLocal = !chrome.runtime.getManifest().update_url && false; // only true in dev unpacked mode
 const BASE_URL = isLocal 
   ? "http://127.0.0.1:5000" 
   : "https://sketch-python.onrender.com";

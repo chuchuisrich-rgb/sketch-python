@@ -296,11 +296,6 @@ def summarize_text_openai(input_text, input_url, mode="1min"):
 
         logging.info("##" * 20)
         logging.info(f"Full GPT output: {raw_output}")
-        logging.info("##" * 20)
-        hf_result = call_hugging_face(prompt)
-        logging.info(f"Full Hugging Face output: {hf_result}")
-        logging.info("##" * 20)
-
 
         # Try to parse JSON (GPT sometimes returns extra formatting)
         try:
