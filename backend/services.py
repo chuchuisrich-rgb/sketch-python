@@ -14,7 +14,7 @@ from PyPDF2 import PdfReader
 from openai import OpenAI
 from googleapiclient.discovery import build
 
-from transformers import pipeline
+# from transformers import pipeline
 
 logger = logging.getLogger(__name__)
 
@@ -327,11 +327,11 @@ def summarize_text_openai(input_text, input_url, mode="1min"):
         return f"Error with the summarization service. Please try again later."
     
 
-def summarize_text_local(text: str) -> str:
-    """
-    Summarize text locally using a lightweight model.
-    Requires 'transformers' and 'torch' installed.
-    """
-    summarizer = pipeline("summarization", model="sshleifer/distilbart-cnn-12-6")
-    summary = summarizer(text, max_length=200, min_length=40, do_sample=False)[0]['summary_text']
-    return summary
+# def summarize_text_local(text: str) -> str:
+#     """
+#     Summarize text locally using a lightweight model.
+#     Requires 'transformers' and 'torch' installed.
+#     """
+#     summarizer = pipeline("summarization", model="sshleifer/distilbart-cnn-12-6")
+#     summary = summarizer(text, max_length=200, min_length=40, do_sample=False)[0]['summary_text']
+#     return summary
