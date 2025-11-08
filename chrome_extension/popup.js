@@ -5,7 +5,7 @@
 // const API_URL = "https://sketch-python.onrender.com/api/summarize";
 
 // Detect environment
-const isLocal = !chrome.runtime.getManifest().update_url && false; // only true in dev unpacked mode
+const isLocal = !chrome.runtime.getManifest().update_url; // only true in dev unpacked mode
 const BASE_URL = isLocal 
   ? "http://127.0.0.1:5000" 
   : "https://sketch-python.onrender.com";
@@ -35,6 +35,56 @@ document.getElementById("summarizeBtn").addEventListener("click", async () => {
     });
 
     console.log("✅ Response status:", response.status, response.statusText);
+
+    // Handle credit or server errors gracefully
+    if (!response.ok || true) {
+      console.warn("⚠️ Backend error:", response.status);
+
+      // Hide existing elements
+      document.getElementById("buttonGroup").classList.add("hidden");
+      document.getElementById("summaryCard").classList.add("hidden");
+
+      // Load the external error template HTML
+      const summaryDiv = document.getElementById("summaryCard");
+      summaryDiv.classList.remove("hidden");
+
+      try {
+        const resp = await fetch(chrome.runtime.getURL("error_template.html"));
+        const html = await resp.text();
+        summaryDiv.innerHTML = html;
+      } catch (err) {
+        console.error("❌ Failed to load error_template.html:", err);
+        summaryDiv.innerHTML = "<p>Error loading template.</p>";
+      }
+
+      // Attach listener for Notify button (after HTML injected)
+      const notifyBtn = summaryDiv.querySelector("#notify-btn");
+      notifyBtn.addEventListener("click", async () => {
+        const email = summaryDiv.querySelector("#email-input").value.trim();
+        const thanks = summaryDiv.querySelector("#thanks");
+
+        if (!email || !email.includes("@")) {
+          alert("Please enter a valid email address.");
+          return;
+        }
+
+        try {
+          const res = await fetch(`${BASE_URL}/api/signup`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ email }),
+          });
+          if (res.ok) thanks.style.display = "block";
+          else alert("Something went wrong. Please try again later.");
+        } catch (err) {
+          alert("Network error. Please try again later.");
+        }
+      });
+
+      // Stop further code execution
+      return;
+    }
+
     const api_response = await response.json();
     const complete_data = api_response.summary;
     console.log("🧾 Full API response:", JSON.stringify(complete_data, null, 2));

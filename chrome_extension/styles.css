@@ -107,3 +107,91 @@ button:hover { background:#005ed1; }
   top: 4px;
   right: 6px;
 }
+
+
+/* ------------------------------
+   ERROR / WAITLIST SIGNUP STYLES
+------------------------------- */
+
+.error-box {
+  all: unset;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  font-family: Inter, Arial, sans-serif;
+  font-size: 13px;
+  color: #333;
+  padding: 4px;
+  line-height: 1.25;
+}
+
+.error-title {
+  font-weight: 600;
+  margin: 0;
+}
+
+.error-text {
+  margin: 2px 0 4px 0;
+}
+
+.error-subtext {
+  color: #666;
+  font-size: 12px;
+  margin: 1px 0 3px 0;
+  line-height: 1.2;
+}
+
+.error-signup {
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+  gap: 4px;
+  margin: 0;
+}
+
+.error-signup input {
+  padding: 4px 6px;
+  width: 155px;
+  height: 21px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 12px;
+  line-height: 1;
+  box-sizing: border-box;
+}
+
+.error-signup button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 21px;
+  padding: 0 5px;
+  min-width: 36px;
+  background: #007aff;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 10.5px;
+  font-weight: 500;
+  line-height: 1;
+  transition: background 0.2s ease, transform 0.15s ease;
+}
+
+.error-signup button:hover {
+  background: #005ed1;
+  transform: translateY(-0.5px);
+}
+
+.error-signup button:active {
+  transform: translateY(0.5px);
+}
+
+.error-thanks {
+  display: none;
+  font-size: 12px;
+  color: green;
+  margin: 4px 0 0 0;
+}
