@@ -10,3 +10,6 @@ logs/
 
 #ignroe misc files
 .DS_Store
+
+#dont pass google api key
+credentials.json

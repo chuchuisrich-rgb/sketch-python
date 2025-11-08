@@ -11,8 +11,6 @@ readability-lxml>=0.8.1
 PyPDF2>=3.0.0
 google-api-python-client>=2.129.0
 
-# NLP and sentiment/summarization models
-# transformers==4.43.3
-# torch==2.2.2
-# sentencepiece==0.2.0
-
+# Adds the Google Sheets API
+gspread==6.1.2
+google-auth==2.34.0

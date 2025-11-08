@@ -277,11 +277,11 @@ def summarize_text_openai(input_text, input_url, mode="1min"):
         # Make GPT-4-Turbo call
         logging.info("Calling gpt-4o-mini for summarization...")
         gpt_start = time.time()
-        response = client.chat.completions.create(
-            model="gpt-4o-mini",
-            messages=[{"role": "user", "content": prompt}],
-            temperature=0.4,
-        )
+        # response = client.chat.completions.create(
+        #     model="gpt-4o-mini",
+        #     messages=[{"role": "user", "content": prompt}],
+        #     temperature=0.4,
+        # )
         #Try to use local
         # response = summarize_text_local(prompt)
         logging.info("##" * 20)
